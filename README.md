@@ -1,2 +1,1 @@
-# index.html
-One file website
+A one file website. Just because.
