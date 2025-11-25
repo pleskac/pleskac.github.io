@@ -1,1 +1,3 @@
-A one file website. Just because.
+# pleskac.org
+
+Keeping it simple.
