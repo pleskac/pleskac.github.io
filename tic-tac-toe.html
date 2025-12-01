@@ -54,7 +54,19 @@
       var currentTurn = "x";
       var currentStateOfGame = [];
 
-      var winningCombos = [[0, 4, 8]];
+      var winningCombos = [
+        //diagonal
+        [0, 4, 8],
+        [2, 4, 6],
+        //rows
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        //cols
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+      ];
 
       const rowRegEx = new RegExp(/row(\d)/);
       const colRegEx = new RegExp(/col(\d)/);
@@ -73,11 +85,24 @@
         currentTurn = "x";
         numberOfTurns = 0;
         currentStateOfGame = [];
-        let allButtons = document.getElementsByClassName("ticTacToeButton");
+        const allButtons = document.getElementsByClassName("ticTacToeButton");
         for (let b of allButtons) {
           b.textContent = "";
           b.removeAttribute("disabled");
         }
+      };
+
+      var disableAllButtons = () => {
+        const allGameButtons =
+          document.getElementsByClassName("ticTacToeButton");
+        for (const b of allGameButtons) {
+          b.setAttribute("disabled", "true");
+        }
+      };
+
+      var onWin = () => {
+        console.log("Someone won!!!!");
+        disableAllButtons();
       };
 
       var calculateWinner = (id, currTurn) => {
@@ -85,6 +110,21 @@
         const row = id.match(rowRegEx)[1];
         const col = id.match(colRegEx)[1];
         currentStateOfGame[(row - 1) * 3 + (col - 1)] = currTurn;
+        // Get all 3 series to see if they match
+        for (const winningCombo of winningCombos) {
+          let isWin = true;
+          for (const win of winningCombo) {
+            if (currentStateOfGame[win] === currTurn) {
+              // potentially
+            } else {
+              isWin = false;
+            }
+          }
+          if (isWin) {
+            onWin();
+          }
+        }
+
         console.log(currentStateOfGame);
         // todo - figure out who won and then draw the red line
       };
