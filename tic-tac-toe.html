@@ -2,20 +2,36 @@
   <head>
     <title>Tic Tac Toe</title>
     <style>
+      body {
+        margin: 0;
+      }
+
       .content {
         display: flex;
         align-items: center;
         justify-content: center;
+        flex-direction: column;
+        gap: 8px;
+
+        height: 100dvh;
+        width: 100dvw;
+      }
+
+      .gameGridWrapper {
+        flex-grow: 1;
+        flex-shrink: 1;
+        flex-basis: 100%;
+        aspect-ratio: 1;
+        position: relative;
       }
 
       .gameGrid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        grid-template-rows: repeat(4, 1fr);
+        grid-template-rows: repeat(3, 1fr);
         grid-column-gap: 15px;
         grid-row-gap: 15px;
-        height: min(100dvh, 100dvh);
-        width: min(100dvh, 100dvh);
+        aspect-ratio: 1;
       }
 
       .ticTacToeButton {
@@ -29,11 +45,12 @@
       button {
         min-height: 40px;
         width: 100%;
+        padding: 8px;
       }
 
       .actions {
-        grid-area: 4 / 1 / 5 / 4;
-        aspect-ratio: auto;
+        flex-shrink: 0;
+        flex-grow: 0;
       }
 
       .reset {
@@ -41,12 +58,17 @@
         width: 100%;
       }
 
-      .winner-line {
-        width: 2px;
+      .winner-line-hide {
+        display: none;
+        position: absolute;
+      }
+
+      .winner-line-show {
         position: absolute;
         height: 100%;
-        background-color: red;
-        display: none;
+        width: 100%;
+        border-left: 2px solid red;
+        pointer-events: none;
       }
     </style>
     <script>
@@ -56,16 +78,34 @@
 
       var winningCombos = [
         //diagonal
-        [0, 4, 8],
-        [2, 4, 6],
+        { win: [0, 4, 8], line: { x: "50%", y: 0, rotate: "-45deg" } },
+        { win: [2, 4, 6], line: { x: "50%", y: 0, rotate: "45deg" } },
         //rows
-        [0, 1, 2],
-        [3, 4, 5],
-        [6, 7, 8],
+        {
+          win: [0, 1, 2],
+          line: { x: "calc(16.5% - 1px)", y: 0, rotate: "90deg" },
+        },
+        {
+          win: [3, 4, 5],
+          line: { x: "calc(50% - 1px)", y: 0, rotate: "90deg" },
+        },
+        {
+          win: [6, 7, 8],
+          line: { x: "calc(83.5% - 1px)", y: 0, rotate: "90deg" },
+        },
         //cols
-        [0, 3, 6],
-        [1, 4, 7],
-        [2, 5, 8],
+        {
+          win: [0, 3, 6],
+          line: { x: "calc(16.5% - 1px)", y: 0, rotate: "0deg" },
+        },
+        {
+          win: [1, 4, 7],
+          line: { x: "calc(50% - 1px)", y: 0, rotate: "0deg" },
+        },
+        {
+          win: [2, 5, 8],
+          line: { x: "calc(83.5% - 1px)", y: 0, rotate: "0deg" },
+        },
       ];
 
       const rowRegEx = new RegExp(/row(\d)/);
@@ -90,6 +130,12 @@
           b.textContent = "";
           b.removeAttribute("disabled");
         }
+
+        const statusSpan = document.getElementById("status-span");
+        statusSpan.textContent = "Click the buttons to play!";
+
+        const winnerLine = document.getElementById("winner-line");
+        winnerLine.setAttribute("class", "winner-line-hide");
       };
 
       var disableAllButtons = () => {
@@ -100,9 +146,18 @@
         }
       };
 
-      var onWin = () => {
-        console.log("Someone won!!!!");
+      var onWin = (line) => {
+        console.log("Someone won!!!!", line);
+        const statusSpan = document.getElementById("status-span");
+        statusSpan.textContent = `${currentTurn} won! Click reset to play again!`;
         disableAllButtons();
+
+        const winnerLine = document.getElementById("winner-line");
+        winnerLine.setAttribute("class", "winner-line-show");
+        winnerLine.setAttribute(
+          "style",
+          `rotate: ${line.rotate}; transform: translate3d(${line.x}, ${line.y}, 0);`
+        );
       };
 
       var calculateWinner = (id, currTurn) => {
@@ -113,7 +168,7 @@
         // Get all 3 series to see if they match
         for (const winningCombo of winningCombos) {
           let isWin = true;
-          for (const win of winningCombo) {
+          for (const win of winningCombo.win) {
             if (currentStateOfGame[win] === currTurn) {
               // potentially
             } else {
@@ -121,7 +176,7 @@
             }
           }
           if (isWin) {
-            onWin();
+            onWin(winningCombo.line);
           }
         }
 
@@ -132,57 +187,62 @@
   </head>
   <body>
     <div class="content">
-      <div class="winner-line"></div>
-      <div class="gameGrid">
-        <button
-          id="row1col1"
-          class="ticTacToeButton"
-          onclick="onGameClick('row1col1')"
-        ></button>
-        <button
-          id="row1col2"
-          class="ticTacToeButton"
-          onclick="onGameClick('row1col2')"
-        ></button>
-        <button
-          id="row1col3"
-          class="ticTacToeButton"
-          onclick="onGameClick('row1col3')"
-        ></button>
-        <button
-          id="row2col1"
-          class="ticTacToeButton"
-          onclick="onGameClick('row2col1')"
-        ></button>
-        <button
-          id="row2col2"
-          class="ticTacToeButton"
-          onclick="onGameClick('row2col2')"
-        ></button>
-        <button
-          id="row2col3"
-          class="ticTacToeButton"
-          onclick="onGameClick('row2col3')"
-        ></button>
-        <button
-          id="row3col1"
-          class="ticTacToeButton"
-          onclick="onGameClick('row3col1')"
-        ></button>
-        <button
-          id="row3col2"
-          class="ticTacToeButton"
-          onclick="onGameClick('row3col2')"
-        ></button>
-        <button
-          id="row3col3"
-          class="ticTacToeButton"
-          onclick="onGameClick('row3col3')"
-        ></button>
-        <div class="actions">
-          <button class="reset" onclick="onReset()">Reset</button>
+      <div></div>
+      <div class="gameGridWrapper">
+        <div id="winner-line" class="winner-line-hide"></div>
+        <div class="gameGrid">
+          <button
+            id="row1col1"
+            class="ticTacToeButton"
+            onclick="onGameClick('row1col1')"
+          ></button>
+          <button
+            id="row1col2"
+            class="ticTacToeButton"
+            onclick="onGameClick('row1col2')"
+          ></button>
+          <button
+            id="row1col3"
+            class="ticTacToeButton"
+            onclick="onGameClick('row1col3')"
+          ></button>
+          <button
+            id="row2col1"
+            class="ticTacToeButton"
+            onclick="onGameClick('row2col1')"
+          ></button>
+          <button
+            id="row2col2"
+            class="ticTacToeButton"
+            onclick="onGameClick('row2col2')"
+          ></button>
+          <button
+            id="row2col3"
+            class="ticTacToeButton"
+            onclick="onGameClick('row2col3')"
+          ></button>
+          <button
+            id="row3col1"
+            class="ticTacToeButton"
+            onclick="onGameClick('row3col1')"
+          ></button>
+          <button
+            id="row3col2"
+            class="ticTacToeButton"
+            onclick="onGameClick('row3col2')"
+          ></button>
+          <button
+            id="row3col3"
+            class="ticTacToeButton"
+            onclick="onGameClick('row3col3')"
+          ></button>
         </div>
       </div>
+      <div class="actions">
+        <span id="status-span">Click the buttons to play!</span>
+        <button class="reset" onclick="onReset()">Reset</button>
+      </div>
+      <div></div>
     </div>
   </body>
 </html>
