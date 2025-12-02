@@ -25,6 +25,11 @@
         flex-basis: 100%;
         aspect-ratio: 1;
         position: relative;
+        /*Truncate winner line on mobile*/
+        overflow: hidden;
+        padding: 2px;
+
+        container: gameGridWrapper / inline-size;
       }
 
       .gameGrid {
@@ -41,11 +46,15 @@
         height: 100%;
         width: 100%;
         color: black;
-        font-size: 200%;
+        font-size: 2em;
         border-radius: 0;
         outline: 1px solid #303030;
         border: none;
         background-color: #dedede88;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
       .ticTacToeButton:disabled {
@@ -80,10 +89,22 @@
         border-left: 2px solid red;
         pointer-events: none;
       }
+
+      @container gameGridWrapper (width < 200px) {
+        .ticTacToeButton {
+          font-size: 1em;
+        }
+      }
+
+      @container gameGridWrapper (width > 475px) {
+        .ticTacToeButton {
+          font-size: 8em;
+        }
+      }
     </style>
     <script>
       var numberOfTurns = 0;
-      var currentTurn = "x";
+      var currentTurn = "X";
       var currentStateOfGame = [];
 
       var winningCombos = [
@@ -128,11 +149,11 @@
         currentButton.textContent = currentTurn;
         currentButton.setAttribute("disabled", "true");
         calculateWinner(id, currentTurn);
-        currentTurn = currentTurn === "x" ? "o" : "x";
+        currentTurn = currentTurn === "X" ? "O" : "X";
       };
 
       var onReset = () => {
-        currentTurn = "x";
+        currentTurn = "X";
         numberOfTurns = 0;
         currentStateOfGame = [];
         const allButtons = document.getElementsByClassName("ticTacToeButton");
