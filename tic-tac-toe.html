@@ -13,13 +13,15 @@
         flex-direction: column;
         gap: 8px;
 
-        height: 100dvh;
-        width: 100dvw;
+        height: calc(100dvh - 16px);
+        width: calc(100dvw - 16px);
+
+        padding: 8px;
       }
 
       .gameGridWrapper {
-        max-width: min(100dvw, 100dvh);
-        max-height: min(100dvw, 100dvh);
+        max-width: calc(min(100dvw, 100dvh) - 16px);
+        max-height: calc(min(100dvw, 100dvh) - 16px);
         flex-grow: 1;
         flex-shrink: 1;
         flex-basis: 100%;
@@ -27,7 +29,6 @@
         position: relative;
         /*Truncate winner line on mobile*/
         overflow: hidden;
-        padding: 2px;
 
         container: gameGridWrapper / inline-size;
       }
@@ -49,6 +50,7 @@
         font-size: 2em;
         border-radius: 0;
         outline: 1px solid #303030;
+        outline-offset: -1px;
         border: none;
         background-color: #dedede88;
         text-align: center;
@@ -86,7 +88,7 @@
         position: absolute;
         height: 100%;
         width: 100%;
-        border-left: 2px solid red;
+        box-shadow: -6px 0 0 0 red;
         pointer-events: none;
       }
 
@@ -109,12 +111,18 @@
 
       var winningCombos = [
         //diagonal
-        { win: [0, 4, 8], line: { x: "50%", y: 0, rotate: "-45deg" } },
-        { win: [2, 4, 6], line: { x: "50%", y: 0, rotate: "45deg" } },
+        {
+          win: [0, 4, 8],
+          line: { x: "calc(50% + 3px)", y: 0, rotate: "-45deg" },
+        },
+        {
+          win: [2, 4, 6],
+          line: { x: "calc(50% + 3px)", y: 0, rotate: "45deg" },
+        },
         //rows
         {
           win: [0, 1, 2],
-          line: { x: "calc(16.5% - 1px)", y: 0, rotate: "90deg" },
+          line: { x: "calc((100% - 30px) / 6 + 3px)", y: 0, rotate: "90deg" },
         },
         {
           win: [3, 4, 5],
@@ -122,20 +130,28 @@
         },
         {
           win: [6, 7, 8],
-          line: { x: "calc(83.5% - 1px)", y: 0, rotate: "90deg" },
+          line: {
+            x: "calc(100% - ((100% - 30px) / 6) + 3px)",
+            y: 0,
+            rotate: "90deg",
+          },
         },
         //cols
         {
           win: [0, 3, 6],
-          line: { x: "calc(16.5% - 1px)", y: 0, rotate: "0deg" },
+          line: { x: "calc((100% - 30px) / 6 + 3px)", y: 0, rotate: "0deg" },
         },
         {
           win: [1, 4, 7],
-          line: { x: "calc(50% - 1px)", y: 0, rotate: "0deg" },
+          line: { x: "calc(50% + 3px)", y: 0, rotate: "0deg" },
         },
         {
           win: [2, 5, 8],
-          line: { x: "calc(83.5% - 1px)", y: 0, rotate: "0deg" },
+          line: {
+            x: "calc(100% - ((100% - 30px) / 6) + 3px)",
+            y: 0,
+            rotate: "0deg",
+          },
         },
       ];
 
@@ -187,7 +203,7 @@
         winnerLine.setAttribute("class", "winner-line-show");
         winnerLine.setAttribute(
           "style",
-          `rotate: ${line.rotate}; transform: translate3d(${line.x}, ${line.y}, 0);`
+          `rotate: ${line.rotate}; transform: translate3d(${line.x}, ${line.y}, 0);`,
         );
       };
 
@@ -212,7 +228,6 @@
         }
 
         console.log(currentStateOfGame);
-        // todo - figure out who won and then draw the red line
       };
     </script>
   </head>
@@ -226,46 +241,55 @@
             id="row1col1"
             class="ticTacToeButton"
             onclick="onGameClick('row1col1')"
+            aria-label="Row 1 Column 1"
           ></button>
           <button
             id="row1col2"
             class="ticTacToeButton"
             onclick="onGameClick('row1col2')"
+            aria-label="Row 1 Column 2"
           ></button>
           <button
             id="row1col3"
             class="ticTacToeButton"
             onclick="onGameClick('row1col3')"
+            aria-label="Row 1 Column 3"
           ></button>
           <button
             id="row2col1"
             class="ticTacToeButton"
             onclick="onGameClick('row2col1')"
+            aria-label="Row 2 Column 1"
           ></button>
           <button
             id="row2col2"
             class="ticTacToeButton"
             onclick="onGameClick('row2col2')"
+            aria-label="Row 2 Column 2"
           ></button>
           <button
             id="row2col3"
             class="ticTacToeButton"
             onclick="onGameClick('row2col3')"
+            aria-label="Row 2 Column 3"
           ></button>
           <button
             id="row3col1"
             class="ticTacToeButton"
             onclick="onGameClick('row3col1')"
+            aria-label="Row 3 Column 1"
           ></button>
           <button
             id="row3col2"
             class="ticTacToeButton"
             onclick="onGameClick('row3col2')"
+            aria-label="Row 3 Column 2"
           ></button>
           <button
             id="row3col3"
             class="ticTacToeButton"
             onclick="onGameClick('row3col3')"
+            aria-label="Row 3 Column 3"
           ></button>
         </div>
       </div>
